@@ -1,0 +1,715 @@
+[
+  {
+    "id": "intent_001",
+    "category": "clear",
+    "text": "What time does your customer service department open on Saturday?",
+    "expected": {
+      "intent": "question",
+      "urgent": false,
+      "sentiment": "neutral"
+    },
+    "actual": {
+      "intent": "question",
+      "intent_confidence": 0.7306999999999999,
+      "urgent": false,
+      "urgent_yes_probability": 0.48229999999999995,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": true,
+    "sentiment_correct": null,
+    "status": "PASS",
+    "latency_seconds": 0.47829687499999995,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n  * question      79.81% ###################.....\n    complaint     20.17% #####...................\n    request        0.00% #.......................\n    chat           0.02% #.......................\n\n    -> choice = question\n       confidence = 73.07%\n\n  urgent\n    Yes           48.23% ############............\n    No            51.77% ############............\n\n  sentiment\n    Negative, frustrated or angry  15.66% ####....................\n    Neutral, informational  61.25% ###############.........\n    Positive, happy or grateful  23.09% ######..................\n\n    -> score = 1.0743\n       confidence = 41.88%\n"
+  },
+  {
+    "id": "intent_002",
+    "category": "clear",
+    "text": "Please send me the installation instructions for the new software.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    },
+    "actual": {
+      "intent": "question",
+      "intent_confidence": 1.0,
+      "urgent": true,
+      "urgent_yes_probability": 0.6709999999999999,
+      "sentiment": null
+    },
+    "intent_correct": false,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.24248004199999995,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n  * question     100.00% ########################\n    complaint      0.00% #.......................\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = question\n       confidence = 100.00%\n\n  urgent\n    Yes           67.10% ################........\n    No            32.90% ########................\n\n  sentiment\n    Negative, frustrated or angry   0.88% #.......................\n    Neutral, informational  78.77% ###################.....\n    Positive, happy or grateful  20.35% #####...................\n\n    -> score = 1.1947\n       confidence = 68.16%\n"
+  },
+  {
+    "id": "intent_003",
+    "category": "clear",
+    "text": "I've been charged twice for the same order. I want my money back immediately.",
+    "expected": {
+      "intent": "complaint",
+      "urgent": true,
+      "sentiment": "negative"
+    },
+    "actual": {
+      "intent": "complaint",
+      "intent_confidence": 0.9815,
+      "urgent": true,
+      "urgent_yes_probability": 0.7931,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": true,
+    "sentiment_correct": null,
+    "status": "PASS",
+    "latency_seconds": 0.25525420900000007,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question       1.39% #.......................\n  * complaint     98.61% ########################\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = complaint\n       confidence = 98.15%\n\n  urgent\n    Yes           79.31% ###################.....\n    No            20.69% #####...................\n\n  sentiment\n    Negative, frustrated or angry  24.53% ######..................\n    Neutral, informational  60.64% ###############.........\n    Positive, happy or grateful  14.84% ####....................\n\n    -> score = 0.9031\n       confidence = 40.96%\n"
+  },
+  {
+    "id": "intent_004",
+    "category": "clear",
+    "text": "Hi, I hope you're doing well. Thanks for your help yesterday.",
+    "expected": {
+      "intent": "chat",
+      "urgent": false,
+      "sentiment": "positive"
+    },
+    "actual": {
+      "intent": "chat",
+      "intent_confidence": 0.9281,
+      "urgent": true,
+      "urgent_yes_probability": 0.59,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.25163837499999997,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question       0.04% #.......................\n    complaint      5.36% #.......................\n    request        0.00% #.......................\n  * chat          94.61% #######################.\n\n    -> choice = chat\n       confidence = 92.81%\n\n  urgent\n    Yes           59.00% ##############..........\n    No            41.00% ##########..............\n\n  sentiment\n    Negative, frustrated or angry   5.46% #.......................\n    Neutral, informational  77.68% ###################.....\n    Positive, happy or grateful  16.86% ####....................\n\n    -> score = 1.1141\n       confidence = 66.52%\n"
+  },
+  {
+    "id": "intent_005",
+    "category": "clear",
+    "text": "Our production server is completely down. Customers cannot access the service and we need this fixed immediately.",
+    "expected": {
+      "intent": "complaint",
+      "urgent": true,
+      "sentiment": "negative"
+    },
+    "actual": {
+      "intent": "complaint",
+      "intent_confidence": 0.9892,
+      "urgent": true,
+      "urgent_yes_probability": 0.9403,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": true,
+    "sentiment_correct": null,
+    "status": "PASS",
+    "latency_seconds": 0.25218387499999984,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question       0.81% #.......................\n  * complaint     99.19% ########################\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = complaint\n       confidence = 98.92%\n\n  urgent\n    Yes           94.03% #######################.\n    No             5.97% #.......................\n\n  sentiment\n    Negative, frustrated or angry   3.46% #.......................\n    Neutral, informational  84.36% ####################....\n    Positive, happy or grateful  12.18% ###.....................\n\n    -> score = 1.0872\n       confidence = 76.54%\n"
+  },
+  {
+    "id": "intent_006",
+    "category": "clear",
+    "text": "Can you explain how I can reset my password?",
+    "expected": {
+      "intent": "question",
+      "urgent": false,
+      "sentiment": "neutral"
+    },
+    "actual": {
+      "intent": "question",
+      "intent_confidence": 0.9813,
+      "urgent": true,
+      "urgent_yes_probability": 0.6818000000000001,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.235746,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n  * question      98.60% ########################\n    complaint      1.40% #.......................\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = question\n       confidence = 98.13%\n\n  urgent\n    Yes           68.18% ################........\n    No            31.82% ########................\n\n  sentiment\n    Negative, frustrated or angry  11.43% ###.....................\n    Neutral, informational  78.03% ###################.....\n    Positive, happy or grateful  10.54% ###.....................\n\n    -> score = 0.9911\n       confidence = 67.05%\n"
+  },
+  {
+    "id": "intent_007",
+    "category": "clear",
+    "text": "Please cancel my subscription before the next billing date.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    },
+    "actual": {
+      "intent": "complaint",
+      "intent_confidence": 0.9964,
+      "urgent": true,
+      "urgent_yes_probability": 0.8345,
+      "sentiment": null
+    },
+    "intent_correct": false,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.24043566700000008,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question       0.25% #.......................\n  * complaint     99.73% ########################\n    request        0.01% #.......................\n    chat           0.00% #.......................\n\n    -> choice = complaint\n       confidence = 99.64%\n\n  urgent\n    Yes           83.45% ####################....\n    No            16.55% ####....................\n\n  sentiment\n    Negative, frustrated or angry   2.05% #.......................\n    Neutral, informational  80.88% ###################.....\n    Positive, happy or grateful  17.07% ####....................\n\n    -> score = 1.1502\n       confidence = 71.33%\n"
+  },
+  {
+    "id": "intent_008",
+    "category": "clear",
+    "text": "The application crashes every time I try to open it. This is extremely frustrating.",
+    "expected": {
+      "intent": "complaint",
+      "urgent": false,
+      "sentiment": "negative"
+    },
+    "actual": {
+      "intent": "complaint",
+      "intent_confidence": 0.9963,
+      "urgent": true,
+      "urgent_yes_probability": 0.7293999999999999,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.24817508300000024,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question       0.28% #.......................\n  * complaint     99.72% ########################\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = complaint\n       confidence = 99.63%\n\n  urgent\n    Yes           72.94% ##################......\n    No            27.06% ######..................\n\n  sentiment\n    Negative, frustrated or angry  10.21% ##......................\n    Neutral, informational  73.43% ##################......\n    Positive, happy or grateful  16.36% ####....................\n\n    -> score = 1.0616\n       confidence = 60.14%\n"
+  },
+  {
+    "id": "intent_009",
+    "category": "clear",
+    "text": "Can you tell me whether the product is available in Germany?",
+    "expected": {
+      "intent": "question",
+      "urgent": false,
+      "sentiment": "neutral"
+    },
+    "actual": {
+      "intent": "question",
+      "intent_confidence": 0.9995,
+      "urgent": true,
+      "urgent_yes_probability": 0.5997,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.2590749579999998,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n  * question      99.96% ########################\n    complaint      0.04% #.......................\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = question\n       confidence = 99.95%\n\n  urgent\n    Yes           59.97% ##############..........\n    No            40.03% ##########..............\n\n  sentiment\n    Negative, frustrated or angry   5.98% #.......................\n    Neutral, informational  71.97% #################.......\n    Positive, happy or grateful  22.05% #####...................\n\n    -> score = 1.1606\n       confidence = 57.95%\n"
+  },
+  {
+    "id": "intent_010",
+    "category": "clear",
+    "text": "Please upgrade my account to the professional plan.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "positive"
+    },
+    "actual": {
+      "intent": "complaint",
+      "intent_confidence": 0.9070999999999999,
+      "urgent": true,
+      "urgent_yes_probability": 0.8814,
+      "sentiment": null
+    },
+    "intent_correct": false,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.2729995839999999,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question       3.27% #.......................\n  * complaint     93.04% ######################..\n    request        3.68% #.......................\n    chat           0.01% #.......................\n\n    -> choice = complaint\n       confidence = 90.71%\n\n  urgent\n    Yes           88.14% #####################...\n    No            11.86% ###.....................\n\n  sentiment\n    Negative, frustrated or angry   1.21% #.......................\n    Neutral, informational  68.15% ################........\n    Positive, happy or grateful  30.64% #######.................\n\n    -> score = 1.2943\n       confidence = 52.22%\n"
+  },
+  {
+    "id": "ambiguous_001",
+    "category": "ambiguous",
+    "text": "I need some help with my account. Something isn't working correctly.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "negative"
+    },
+    "actual": {
+      "intent": "question",
+      "intent_confidence": 0.7454000000000001,
+      "urgent": true,
+      "urgent_yes_probability": 0.6281,
+      "sentiment": null
+    },
+    "intent_correct": false,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.24665891699999998,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n  * question      80.90% ###################.....\n    complaint     19.10% #####...................\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = question\n       confidence = 74.54%\n\n  urgent\n    Yes           62.81% ###############.........\n    No            37.19% #########...............\n\n  sentiment\n    Negative, frustrated or angry   0.82% #.......................\n    Neutral, informational  66.30% ################........\n    Positive, happy or grateful  32.88% ########................\n\n    -> score = 1.3206\n       confidence = 49.45%\n"
+  },
+  {
+    "id": "ambiguous_002",
+    "category": "ambiguous",
+    "text": "I need the installation instructions for the new software.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    },
+    "actual": {
+      "intent": "question",
+      "intent_confidence": 1.0,
+      "urgent": true,
+      "urgent_yes_probability": 0.6652,
+      "sentiment": null
+    },
+    "intent_correct": false,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.2563834169999999,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n  * question     100.00% ########################\n    complaint      0.00% #.......................\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = question\n       confidence = 100.00%\n\n  urgent\n    Yes           66.52% ################........\n    No            33.48% ########................\n\n  sentiment\n    Negative, frustrated or angry   0.80% #.......................\n    Neutral, informational  80.14% ###################.....\n    Positive, happy or grateful  19.06% #####...................\n\n    -> score = 1.1826\n       confidence = 70.21%\n"
+  },
+  {
+    "id": "ambiguous_003",
+    "category": "ambiguous",
+    "text": "What can you do to fix my account?",
+    "expected": {
+      "intent": "question",
+      "urgent": false,
+      "sentiment": "neutral"
+    },
+    "actual": {
+      "intent": "question",
+      "intent_confidence": 0.9767,
+      "urgent": true,
+      "urgent_yes_probability": 0.7414000000000001,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.252114583,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n  * question      98.25% ########################\n    complaint      1.75% #.......................\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = question\n       confidence = 97.67%\n\n  urgent\n    Yes           74.14% ##################......\n    No            25.86% ######..................\n\n  sentiment\n    Negative, frustrated or angry  24.69% ######..................\n    Neutral, informational  62.47% ###############.........\n    Positive, happy or grateful  12.84% ###.....................\n\n    -> score = 0.8815\n       confidence = 43.70%\n"
+  },
+  {
+    "id": "ambiguous_004",
+    "category": "ambiguous",
+    "text": "I was wondering if you could change my billing address.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    },
+    "actual": {
+      "intent": "question",
+      "intent_confidence": 1.0,
+      "urgent": true,
+      "urgent_yes_probability": 0.8157,
+      "sentiment": null
+    },
+    "intent_correct": false,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.2467921660000001,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n  * question     100.00% ########################\n    complaint      0.00% #.......................\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = question\n       confidence = 100.00%\n\n  urgent\n    Yes           81.57% ####################....\n    No            18.43% ####....................\n\n  sentiment\n    Negative, frustrated or angry  21.91% #####...................\n    Neutral, informational  66.27% ################........\n    Positive, happy or grateful  11.83% ###.....................\n\n    -> score = 0.8992\n       confidence = 49.40%\n"
+  },
+  {
+    "id": "ambiguous_005",
+    "category": "ambiguous",
+    "text": "The new interface is not what I expected.",
+    "expected": {
+      "intent": "complaint",
+      "urgent": false,
+      "sentiment": "negative"
+    },
+    "actual": {
+      "intent": "complaint",
+      "intent_confidence": 0.9990000000000001,
+      "urgent": true,
+      "urgent_yes_probability": 0.7585999999999999,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.25132291699999953,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question       0.08% #.......................\n  * complaint     99.92% ########################\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = complaint\n       confidence = 99.90%\n\n  urgent\n    Yes           75.86% ##################......\n    No            24.14% ######..................\n\n  sentiment\n    Negative, frustrated or angry  13.80% ###.....................\n    Neutral, informational  72.89% #################.......\n    Positive, happy or grateful  13.31% ###.....................\n\n    -> score = 0.9951\n       confidence = 59.33%\n"
+  },
+  {
+    "id": "urgent_001",
+    "category": "urgency",
+    "text": "HELP! Our entire production system is down right now.",
+    "expected": {
+      "intent": "complaint",
+      "urgent": true,
+      "sentiment": "negative"
+    },
+    "actual": {
+      "intent": "complaint",
+      "intent_confidence": 0.9789,
+      "urgent": true,
+      "urgent_yes_probability": 0.8393999999999999,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": true,
+    "sentiment_correct": null,
+    "status": "PASS",
+    "latency_seconds": 0.268244417,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question       1.58% #.......................\n  * complaint     98.41% ########################\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = complaint\n       confidence = 97.89%\n\n  urgent\n    Yes           83.94% ####################....\n    No            16.06% ####....................\n\n  sentiment\n    Negative, frustrated or angry   1.02% #.......................\n    Neutral, informational  78.55% ###################.....\n    Positive, happy or grateful  20.43% #####...................\n\n    -> score = 1.1941\n       confidence = 67.83%\n"
+  },
+  {
+    "id": "urgent_002",
+    "category": "urgency",
+    "text": "There is no immediate problem. Please respond whenever you have time.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    },
+    "actual": {
+      "intent": "complaint",
+      "intent_confidence": 0.8906000000000001,
+      "urgent": true,
+      "urgent_yes_probability": 0.5672,
+      "sentiment": null
+    },
+    "intent_correct": false,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.24923741700000068,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question       8.13% ##......................\n  * complaint     91.79% ######################..\n    request        0.01% #.......................\n    chat           0.07% #.......................\n\n    -> choice = complaint\n       confidence = 89.06%\n\n  urgent\n    Yes           56.72% ##############..........\n    No            43.28% ##########..............\n\n  sentiment\n    Negative, frustrated or angry   2.61% #.......................\n    Neutral, informational  77.17% ###################.....\n    Positive, happy or grateful  20.22% #####...................\n\n    -> score = 1.1761\n       confidence = 65.76%\n"
+  },
+  {
+    "id": "urgent_003",
+    "category": "urgency",
+    "text": "This needs to be fixed before our presentation in one hour.",
+    "expected": {
+      "intent": "request",
+      "urgent": true,
+      "sentiment": "negative"
+    },
+    "actual": {
+      "intent": "complaint",
+      "intent_confidence": 0.9925,
+      "urgent": true,
+      "urgent_yes_probability": 0.9403,
+      "sentiment": null
+    },
+    "intent_correct": false,
+    "urgent_correct": true,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.2610721660000008,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question       0.51% #.......................\n  * complaint     99.44% ########################\n    request        0.03% #.......................\n    chat           0.02% #.......................\n\n    -> choice = complaint\n       confidence = 99.25%\n\n  urgent\n    Yes           94.03% #######################.\n    No             5.97% #.......................\n\n  sentiment\n    Negative, frustrated or angry   1.46% #.......................\n    Neutral, informational  74.09% ##################......\n    Positive, happy or grateful  24.45% ######..................\n\n    -> score = 1.2300\n       confidence = 61.13%\n"
+  },
+  {
+    "id": "urgent_004",
+    "category": "urgency",
+    "text": "Whenever you get a chance, please send me the documentation.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    },
+    "actual": {
+      "intent": "question",
+      "intent_confidence": 0.9281999999999999,
+      "urgent": true,
+      "urgent_yes_probability": 0.5338,
+      "sentiment": null
+    },
+    "intent_correct": false,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.24315987499999991,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n  * question      94.62% #######################.\n    complaint      5.34% #.......................\n    request        0.01% #.......................\n    chat           0.04% #.......................\n\n    -> choice = question\n       confidence = 92.82%\n\n  urgent\n    Yes           53.38% #############...........\n    No            46.62% ###########.............\n\n  sentiment\n    Negative, frustrated or angry   3.44% #.......................\n    Neutral, informational  82.57% ####################....\n    Positive, happy or grateful  13.99% ###.....................\n\n    -> score = 1.1055\n       confidence = 73.85%\n"
+  },
+  {
+    "id": "sentiment_001",
+    "category": "sentiment",
+    "text": "Thank you so much. Your support team was fantastic!",
+    "expected": {
+      "intent": "chat",
+      "urgent": false,
+      "sentiment": "positive"
+    },
+    "actual": {
+      "intent": "chat",
+      "intent_confidence": 0.8097,
+      "urgent": true,
+      "urgent_yes_probability": 0.7070000000000001,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.25537087500000055,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question       0.00% #.......................\n    complaint     14.27% ###.....................\n    request        0.00% #.......................\n  * chat          85.73% #####################...\n\n    -> choice = chat\n       confidence = 80.97%\n\n  urgent\n    Yes           70.70% #################.......\n    No            29.30% #######.................\n\n  sentiment\n    Negative, frustrated or angry   2.67% #.......................\n    Neutral, informational  82.96% ####################....\n    Positive, happy or grateful  14.37% ###.....................\n\n    -> score = 1.1170\n       confidence = 74.45%\n"
+  },
+  {
+    "id": "sentiment_002",
+    "category": "sentiment",
+    "text": "This is terrible. Nothing works and I am extremely disappointed.",
+    "expected": {
+      "intent": "complaint",
+      "urgent": false,
+      "sentiment": "negative"
+    },
+    "actual": {
+      "intent": "complaint",
+      "intent_confidence": 0.9998,
+      "urgent": true,
+      "urgent_yes_probability": 0.6768000000000001,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.24914279199999978,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question       0.01% #.......................\n  * complaint     99.98% ########################\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = complaint\n       confidence = 99.98%\n\n  urgent\n    Yes           67.68% ################........\n    No            32.32% ########................\n\n  sentiment\n    Negative, frustrated or angry  10.66% ###.....................\n    Neutral, informational  79.30% ###################.....\n    Positive, happy or grateful  10.04% ##......................\n\n    -> score = 0.9937\n       confidence = 68.95%\n"
+  },
+  {
+    "id": "sentiment_003",
+    "category": "sentiment",
+    "text": "The account was updated successfully. Thank you.",
+    "expected": {
+      "intent": "chat",
+      "urgent": false,
+      "sentiment": "positive"
+    },
+    "actual": {
+      "intent": "question",
+      "intent_confidence": 0.3525,
+      "urgent": true,
+      "urgent_yes_probability": 0.8432999999999999,
+      "sentiment": null
+    },
+    "intent_correct": false,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.2606695830000003,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n  * question      51.44% ############............\n    complaint     47.61% ###########.............\n    request        0.04% #.......................\n    chat           0.91% #.......................\n\n    -> choice = question\n       confidence = 35.25%\n\n  urgent\n    Yes           84.33% ####################....\n    No            15.67% ####....................\n\n  sentiment\n    Negative, frustrated or angry   1.65% #.......................\n    Neutral, informational  87.16% #####################...\n    Positive, happy or grateful  11.19% ###.....................\n\n    -> score = 1.0954\n       confidence = 80.73%\n"
+  },
+  {
+    "id": "sentiment_004",
+    "category": "sentiment",
+    "text": "The invoice shows the correct amount.",
+    "expected": {
+      "intent": "chat",
+      "urgent": false,
+      "sentiment": "neutral"
+    },
+    "actual": {
+      "intent": "question",
+      "intent_confidence": 0.4285,
+      "urgent": true,
+      "urgent_yes_probability": 0.9361,
+      "sentiment": null
+    },
+    "intent_correct": false,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.2499017919999993,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n  * question      57.14% ##############..........\n    complaint     42.36% ##########..............\n    request        0.42% #.......................\n    chat           0.08% #.......................\n\n    -> choice = question\n       confidence = 42.85%\n\n  urgent\n    Yes           93.61% ######################..\n    No             6.39% ##......................\n\n  sentiment\n    Negative, frustrated or angry   1.97% #.......................\n    Neutral, informational  78.14% ###################.....\n    Positive, happy or grateful  19.89% #####...................\n\n    -> score = 1.1791\n       confidence = 67.20%\n"
+  },
+  {
+    "id": "german_001",
+    "category": "german",
+    "text": "Mein Konto funktioniert nicht mehr und ich brauche dringend Hilfe.",
+    "expected": {
+      "intent": "request",
+      "urgent": true,
+      "sentiment": "negative"
+    },
+    "actual": {
+      "intent": "question",
+      "intent_confidence": 0.9792000000000001,
+      "urgent": true,
+      "urgent_yes_probability": 0.8739,
+      "sentiment": null
+    },
+    "intent_correct": false,
+    "urgent_correct": true,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.2557870419999997,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n  * question      98.44% ########################\n    complaint      1.56% #.......................\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = question\n       confidence = 97.92%\n\n  urgent\n    Yes           87.39% #####################...\n    No            12.61% ###.....................\n\n  sentiment\n    Negative, frustrated or angry   8.33% ##......................\n    Neutral, informational  62.32% ###############.........\n    Positive, happy or grateful  29.35% #######.................\n\n    -> score = 1.2102\n       confidence = 43.48%\n"
+  },
+  {
+    "id": "german_002",
+    "category": "german",
+    "text": "Können Sie mir bitte sagen, wann der Kundendienst geöffnet ist?",
+    "expected": {
+      "intent": "question",
+      "urgent": false,
+      "sentiment": "neutral"
+    },
+    "actual": {
+      "intent": "question",
+      "intent_confidence": 1.0,
+      "urgent": false,
+      "urgent_yes_probability": 0.3668,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": true,
+    "sentiment_correct": null,
+    "status": "PASS",
+    "latency_seconds": 0.25124895899999977,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n  * question     100.00% ########################\n    complaint      0.00% #.......................\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = question\n       confidence = 100.00%\n\n  urgent\n    Yes           36.68% #########...............\n    No            63.32% ###############.........\n\n  sentiment\n    Negative, frustrated or angry   8.90% ##......................\n    Neutral, informational  67.65% ################........\n    Positive, happy or grateful  23.46% ######..................\n\n    -> score = 1.1456\n       confidence = 51.47%\n"
+  },
+  {
+    "id": "german_003",
+    "category": "german",
+    "text": "Bitte schicken Sie mir die Rechnung noch einmal.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    },
+    "actual": {
+      "intent": "complaint",
+      "intent_confidence": 0.8273999999999999,
+      "urgent": true,
+      "urgent_yes_probability": 0.5979,
+      "sentiment": null
+    },
+    "intent_correct": false,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.2467704589999995,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question      11.15% ###.....................\n  * complaint     87.05% #####################...\n    request        1.79% #.......................\n    chat           0.00% #.......................\n\n    -> choice = complaint\n       confidence = 82.74%\n\n  urgent\n    Yes           59.79% ##############..........\n    No            40.21% ##########..............\n\n  sentiment\n    Negative, frustrated or angry   8.08% ##......................\n    Neutral, informational  66.26% ################........\n    Positive, happy or grateful  25.66% ######..................\n\n    -> score = 1.1758\n       confidence = 49.39%\n"
+  },
+  {
+    "id": "german_004",
+    "category": "german",
+    "text": "Ich bin sehr enttäuscht. Das Problem wurde immer noch nicht gelöst.",
+    "expected": {
+      "intent": "complaint",
+      "urgent": false,
+      "sentiment": "negative"
+    },
+    "actual": {
+      "intent": "complaint",
+      "intent_confidence": 0.9991,
+      "urgent": false,
+      "urgent_yes_probability": 0.4907,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": true,
+    "sentiment_correct": null,
+    "status": "PASS",
+    "latency_seconds": 0.24204808399999944,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question       0.07% #.......................\n  * complaint     99.93% ########################\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = complaint\n       confidence = 99.91%\n\n  urgent\n    Yes           49.07% ############............\n    No            50.93% ############............\n\n  sentiment\n    Negative, frustrated or angry  23.44% ######..................\n    Neutral, informational  53.14% #############...........\n    Positive, happy or grateful  23.42% ######..................\n\n    -> score = 0.9998\n       confidence = 29.71%\n"
+  },
+  {
+    "id": "short_001",
+    "category": "boundary",
+    "text": "HELP!",
+    "expected": {
+      "intent": "complaint",
+      "urgent": true,
+      "sentiment": "negative"
+    },
+    "actual": {
+      "intent": "complaint",
+      "intent_confidence": 0.47590000000000005,
+      "urgent": true,
+      "urgent_yes_probability": 0.6106,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": true,
+    "sentiment_correct": null,
+    "status": "PASS",
+    "latency_seconds": 0.2529670830000006,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question      39.28% #########...............\n  * complaint     60.70% ###############.........\n    request        0.02% #.......................\n    chat           0.01% #.......................\n\n    -> choice = complaint\n       confidence = 47.59%\n\n  urgent\n    Yes           61.06% ###############.........\n    No            38.94% #########...............\n\n  sentiment\n    Negative, frustrated or angry   3.09% #.......................\n    Neutral, informational  66.13% ################........\n    Positive, happy or grateful  30.77% #######.................\n\n    -> score = 1.2768\n       confidence = 49.20%\n"
+  },
+  {
+    "id": "short_002",
+    "category": "boundary",
+    "text": "Thanks!",
+    "expected": {
+      "intent": "chat",
+      "urgent": false,
+      "sentiment": "positive"
+    },
+    "actual": {
+      "intent": "complaint",
+      "intent_confidence": 0.8995000000000001,
+      "urgent": true,
+      "urgent_yes_probability": 0.7818,
+      "sentiment": null
+    },
+    "intent_correct": false,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.2612597499999998,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n    question       1.41% #.......................\n  * complaint     92.46% ######################..\n    request        0.01% #.......................\n    chat           6.12% #.......................\n\n    -> choice = complaint\n       confidence = 89.95%\n\n  urgent\n    Yes           78.18% ###################.....\n    No            21.82% #####...................\n\n  sentiment\n    Negative, frustrated or angry   4.24% #.......................\n    Neutral, informational  82.39% ####################....\n    Positive, happy or grateful  13.36% ###.....................\n\n    -> score = 1.0912\n       confidence = 73.59%\n"
+  },
+  {
+    "id": "short_003",
+    "category": "boundary",
+    "text": "How?",
+    "expected": {
+      "intent": "question",
+      "urgent": false,
+      "sentiment": "neutral"
+    },
+    "actual": {
+      "intent": "question",
+      "intent_confidence": 0.3795,
+      "urgent": false,
+      "urgent_yes_probability": 0.4313,
+      "sentiment": null
+    },
+    "intent_correct": true,
+    "urgent_correct": true,
+    "sentiment_correct": null,
+    "status": "PASS",
+    "latency_seconds": 0.24590412500000003,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n  * question      53.46% #############...........\n    complaint     46.28% ###########.............\n    request        0.05% #.......................\n    chat           0.21% #.......................\n\n    -> choice = question\n       confidence = 37.95%\n\n  urgent\n    Yes           43.13% ##########..............\n    No            56.87% ##############..........\n\n  sentiment\n    Negative, frustrated or angry   1.52% #.......................\n    Neutral, informational  72.75% #################.......\n    Positive, happy or grateful  25.73% ######..................\n\n    -> score = 1.2421\n       confidence = 59.13%\n"
+  },
+  {
+    "id": "short_004",
+    "category": "boundary",
+    "text": "Please help.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    },
+    "actual": {
+      "intent": "question",
+      "intent_confidence": 0.8959,
+      "urgent": true,
+      "urgent_yes_probability": 0.5171,
+      "sentiment": null
+    },
+    "intent_correct": false,
+    "urgent_correct": false,
+    "sentiment_correct": null,
+    "status": "FAIL",
+    "latency_seconds": 0.2600045419999999,
+    "raw_output": "\n[ok]  noul = 0.8851  (works!)\n\n  intent\n  * question      92.19% ######################..\n    complaint      7.80% ##......................\n    request        0.00% #.......................\n    chat           0.00% #.......................\n\n    -> choice = question\n       confidence = 89.59%\n\n  urgent\n    Yes           51.71% ############............\n    No            48.29% ############............\n\n  sentiment\n    Negative, frustrated or angry   3.01% #.......................\n    Neutral, informational  72.77% #################.......\n    Positive, happy or grateful  24.23% ######..................\n\n    -> score = 1.2122\n       confidence = 59.15%\n"
+  }
+]

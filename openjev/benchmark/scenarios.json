@@ -1,0 +1,317 @@
+[
+  {
+    "id": "intent_001",
+    "category": "clear",
+    "text": "What time does your customer service department open on Saturday?",
+    "expected": {
+      "intent": "question",
+      "urgent": false,
+      "sentiment": "neutral"
+    }
+  },
+  {
+    "id": "intent_002",
+    "category": "clear",
+    "text": "Please send me the installation instructions for the new software.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    }
+  },
+  {
+    "id": "intent_003",
+    "category": "clear",
+    "text": "I've been charged twice for the same order. I want my money back immediately.",
+    "expected": {
+      "intent": "complaint",
+      "urgent": true,
+      "sentiment": "negative"
+    }
+  },
+  {
+    "id": "intent_004",
+    "category": "clear",
+    "text": "Hi, I hope you're doing well. Thanks for your help yesterday.",
+    "expected": {
+      "intent": "chat",
+      "urgent": false,
+      "sentiment": "positive"
+    }
+  },
+  {
+    "id": "intent_005",
+    "category": "clear",
+    "text": "Our production server is completely down. Customers cannot access the service and we need this fixed immediately.",
+    "expected": {
+      "intent": "complaint",
+      "urgent": true,
+      "sentiment": "negative"
+    }
+  },
+  {
+    "id": "intent_006",
+    "category": "clear",
+    "text": "Can you explain how I can reset my password?",
+    "expected": {
+      "intent": "question",
+      "urgent": false,
+      "sentiment": "neutral"
+    }
+  },
+  {
+    "id": "intent_007",
+    "category": "clear",
+    "text": "Please cancel my subscription before the next billing date.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    }
+  },
+  {
+    "id": "intent_008",
+    "category": "clear",
+    "text": "The application crashes every time I try to open it. This is extremely frustrating.",
+    "expected": {
+      "intent": "complaint",
+      "urgent": false,
+      "sentiment": "negative"
+    }
+  },
+  {
+    "id": "intent_009",
+    "category": "clear",
+    "text": "Can you tell me whether the product is available in Germany?",
+    "expected": {
+      "intent": "question",
+      "urgent": false,
+      "sentiment": "neutral"
+    }
+  },
+  {
+    "id": "intent_010",
+    "category": "clear",
+    "text": "Please upgrade my account to the professional plan.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "positive"
+    }
+  },
+
+  {
+    "id": "ambiguous_001",
+    "category": "ambiguous",
+    "text": "I need some help with my account. Something isn't working correctly.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "negative"
+    }
+  },
+  {
+    "id": "ambiguous_002",
+    "category": "ambiguous",
+    "text": "I need the installation instructions for the new software.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    }
+  },
+  {
+    "id": "ambiguous_003",
+    "category": "ambiguous",
+    "text": "What can you do to fix my account?",
+    "expected": {
+      "intent": "question",
+      "urgent": false,
+      "sentiment": "neutral"
+    }
+  },
+  {
+    "id": "ambiguous_004",
+    "category": "ambiguous",
+    "text": "I was wondering if you could change my billing address.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    }
+  },
+  {
+    "id": "ambiguous_005",
+    "category": "ambiguous",
+    "text": "The new interface is not what I expected.",
+    "expected": {
+      "intent": "complaint",
+      "urgent": false,
+      "sentiment": "negative"
+    }
+  },
+
+  {
+    "id": "urgent_001",
+    "category": "urgency",
+    "text": "HELP! Our entire production system is down right now.",
+    "expected": {
+      "intent": "complaint",
+      "urgent": true,
+      "sentiment": "negative"
+    }
+  },
+  {
+    "id": "urgent_002",
+    "category": "urgency",
+    "text": "There is no immediate problem. Please respond whenever you have time.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    }
+  },
+  {
+    "id": "urgent_003",
+    "category": "urgency",
+    "text": "This needs to be fixed before our presentation in one hour.",
+    "expected": {
+      "intent": "request",
+      "urgent": true,
+      "sentiment": "negative"
+    }
+  },
+  {
+    "id": "urgent_004",
+    "category": "urgency",
+    "text": "Whenever you get a chance, please send me the documentation.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    }
+  },
+
+  {
+    "id": "sentiment_001",
+    "category": "sentiment",
+    "text": "Thank you so much. Your support team was fantastic!",
+    "expected": {
+      "intent": "chat",
+      "urgent": false,
+      "sentiment": "positive"
+    }
+  },
+  {
+    "id": "sentiment_002",
+    "category": "sentiment",
+    "text": "This is terrible. Nothing works and I am extremely disappointed.",
+    "expected": {
+      "intent": "complaint",
+      "urgent": false,
+      "sentiment": "negative"
+    }
+  },
+  {
+    "id": "sentiment_003",
+    "category": "sentiment",
+    "text": "The account was updated successfully. Thank you.",
+    "expected": {
+      "intent": "chat",
+      "urgent": false,
+      "sentiment": "positive"
+    }
+  },
+  {
+    "id": "sentiment_004",
+    "category": "sentiment",
+    "text": "The invoice shows the correct amount.",
+    "expected": {
+      "intent": "chat",
+      "urgent": false,
+      "sentiment": "neutral"
+    }
+  },
+
+  {
+    "id": "german_001",
+    "category": "german",
+    "text": "Mein Konto funktioniert nicht mehr und ich brauche dringend Hilfe.",
+    "expected": {
+      "intent": "request",
+      "urgent": true,
+      "sentiment": "negative"
+    }
+  },
+  {
+    "id": "german_002",
+    "category": "german",
+    "text": "Können Sie mir bitte sagen, wann der Kundendienst geöffnet ist?",
+    "expected": {
+      "intent": "question",
+      "urgent": false,
+      "sentiment": "neutral"
+    }
+  },
+  {
+    "id": "german_003",
+    "category": "german",
+    "text": "Bitte schicken Sie mir die Rechnung noch einmal.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    }
+  },
+  {
+    "id": "german_004",
+    "category": "german",
+    "text": "Ich bin sehr enttäuscht. Das Problem wurde immer noch nicht gelöst.",
+    "expected": {
+      "intent": "complaint",
+      "urgent": false,
+      "sentiment": "negative"
+    }
+  },
+
+  {
+    "id": "short_001",
+    "category": "boundary",
+    "text": "HELP!",
+    "expected": {
+      "intent": "complaint",
+      "urgent": true,
+      "sentiment": "negative"
+    }
+  },
+  {
+    "id": "short_002",
+    "category": "boundary",
+    "text": "Thanks!",
+    "expected": {
+      "intent": "chat",
+      "urgent": false,
+      "sentiment": "positive"
+    }
+  },
+  {
+    "id": "short_003",
+    "category": "boundary",
+    "text": "How?",
+    "expected": {
+      "intent": "question",
+      "urgent": false,
+      "sentiment": "neutral"
+    }
+  },
+  {
+    "id": "short_004",
+    "category": "boundary",
+    "text": "Please help.",
+    "expected": {
+      "intent": "request",
+      "urgent": false,
+      "sentiment": "neutral"
+    }
+  }
+]
