@@ -26,6 +26,8 @@ English | [简体中文](README.zh-CN.md)
 
 **Turn any local LLM into a [Jev](https://jevai.net) — the viral "System One" decision model — running 100% on your machine.**
 
+> **30-second version.** A *decision model* doesn't chat — you send a state plus typed questions ("which team?", "how urgent?"), and it returns **type-safe answers with calibrated probabilities**: no free-text generation, no hallucination, one forward pass. [Jev](https://jevai.net) made this viral as a closed cloud API. **OpenJev is the open version:** point it at a small local model (masked-logit softmax, $0, private), *or* at any OpenAI-compatible API you already have a key for (OpenAI, OpenRouter, DeepSeek, Groq, a self-hosted vLLM...), *or* at the official Jev cloud — same interface, swap with one flag. Ship a router, a ticket triage, a confidence gate — without paying per decision or leaking data.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](pyproject.toml)
 [![CI](https://github.com/lookski/openjev/actions/workflows/ci.yml/badge.svg)](https://github.com/lookski/openjev/actions/workflows/ci.yml)
@@ -81,6 +83,18 @@ LLMs already "know" the answer. The problem is the **decoding**: generating text
 
 The probabilities are **raw softmax values** of the masked logits — not sampled, not prompted for, not parsed from text. That is the honest, model-native confidence.
 
+## Run it on three kinds of brains
+
+| Brain | Engine | Needs | Cost | Privacy |
+|---|---|---|---|---|
+| **Local model** (default) | `LocalJev` — masked-logit softmax | any HF causal LM or local path (0.6B ≈ 3 GB RAM) | $0 | never leaves the machine |
+| **OpenAI-compatible API** | `OpenAICompatJev` — top-logprobs of the first token | a key or a local server: OpenAI, OpenRouter, DeepSeek, Groq, Together, Ollama, LM Studio, vLLM, llama.cpp | per-token (or free self-hosted) | per provider; self-hosted stays local |
+| **Official Jev cloud** | `RemoteJev` — wire-compatible client | `$TYPESAFE_API_KEY` | Jev pricing | data leaves the machine |
+
+All three expose the same `.system_one(state, questions)` / `POST /v1/systemone` interface — swap with one flag, A/B accuracy and latency with zero code changes.
+
+> **Honest boundary:** API backends read probabilities from the response's `logprobs`, so they need a provider that returns them. OpenAI-compatible endpoints do; **Anthropic's API does not expose logprobs, so it can't power an OpenJev backend** — that's a property of their API, not a limitation of this design.
+
 ## Quick start
 
 ### Easy mode (zero code, recommended first)
@@ -113,7 +127,39 @@ You> The server is down, we are losing money, fix it NOW.
 *(measured output, built-in engine, Qwen3-0.6B)*
 
 Non-interactive one-shot: `openjev-easy --backend ollama --model qwen3:0.6b --once "some text"`.
-All backends — including the official Jev cloud API via `--backend jev` — expose the same interface, so you can A/B them with one flag.
+
+**All eight backends** (menu is skipped when `--backend` is given):
+
+| `--backend` | Connects to | Key / notes |
+|---|---|---|
+| `local` | in-process masked-logit softmax | downloads a model (default) |
+| `ollama` | `localhost:11434/v1` | your already-running Ollama |
+| `lmstudio` | `localhost:1234/v1` | your already-running LM Studio |
+| `llamacpp` | `localhost:8080/v1` | llama.cpp server |
+| `vllm` | `localhost:8000/v1` | self-hosted vLLM |
+| `openai` | `api.openai.com/v1` | `$OPENAI_API_KEY` |
+| `openrouter` | `openrouter.ai/api/v1` | `$OPENROUTER_API_KEY`; hundreds of models incl. free tiers |
+| `jev` | official TypeSafe Jev cloud | `$TYPESAFE_API_KEY` |
+
+Any other OpenAI-compatible server (DeepSeek, Groq, Together, your own vLLM behind a domain) works via `--base-url`:
+
+```bash
+openjev-easy --backend openai --base-url https://api.deepseek.com/v1 \
+  --model deepseek-chat --api-key sk-... --once "text"
+```
+
+Library equivalent — one factory, every brain:
+
+```python
+from openjev.easy import make_engine
+
+engine = make_engine("vllm", model="Qwen/Qwen3-0.6B", base_url="http://gpu-box:8000/v1")
+# same .system_one(state, questions) as LocalJev / RemoteJev — swap brains freely
+```
+
+All backends expose the same interface, so you can A/B local vs cloud with one flag.
+
+> API backends read probabilities from `logprobs` of the first generated token — that's why they need an OpenAI-compatible endpoint (Anthropic's API doesn't expose logprobs). No logprobs, no honest probabilities: the backend refuses instead of making numbers up.
 
 ### Full engine (masked softmax, the default deep path)
 
@@ -173,6 +219,8 @@ curl -s http://127.0.0.1:8771/v1/systemone \
 Response shape matches the official API (`answers` keyed by question id, `noul` has no `confidence`, `score` is the index-weighted mean, `confidence = (K·max_p − 1)/(K − 1)`).
 
 ### Two backends, one interface (local softmax ⇄ official Jev API)
+
+> For the full backend menu (OpenAI-compatible APIs too) see Easy mode above and `make_engine()` in [`openjev/easy.py`](openjev/easy.py). This section is the library-level local ⇄ official-Jev pair.
 
 ```bash
 export TYPESAFE_API_KEY=sk-...                      # optional cloud backend
@@ -293,6 +341,149 @@ Measured on the default demo chat (real output):
 ```
 
 In the model's eyes **everyone is 90%+ about to explode**, and the most dangerous message in the whole chat is... `嗯`. Honestly? Accurate.
+
+### Crush radar: should you text back?
+
+```bash
+python examples/fun_crush_radar.py --file chat.txt   # two speakers, "name: message" lines
+```
+
+Paste a chat log with someone you are pursuing; every message gets an interest score (0-3), a warmth and a perfunctory probability, then the tool prints one move: **冲 / 稳 / 缓 / 停**. Two demo chats, measured with the default 0.6B brain (real output):
+
+| their replies | their interest | yours | verdict |
+|---|---|---|---|
+| `我看看有没有时间吧` / `嗯` / `没干嘛, 就是挺忙的` | 0.06/3 | 0.73/3 | **缓** — their investment is far below yours (gap −0.67), hand the topic back |
+| `去呀! 那我们一起呗` / `太好了, 那说定了` | 0.62/3 | 0.40/3 | **稳** — trend flat, investments close; decide on the next round |
+
+The verdict is derived from **relative** signals only (interest gap + trend direction) — the toy model compresses absolute Chinese-message scores into a narrow band (it rates almost everything perfunctory at ~0.9, exactly like the yin-yang detector rates everything yin-yang), so absolute thresholds would be meaningless. Honest numbers in, honest hedging out.
+
+No WeChat/QQ integration by design: auto-reading chat apps risks account bans. OpenJev reads what **you paste**, nothing more.
+
+### Crush radar, serious edition: full-context LLM engine + bot hub
+
+Token probabilities from a 0.6B model are a party trick. For a verdict you might actually act on, point the radar at a **big LLM through any OpenAI-compatible API** — the engine is provider-agnostic and ships **no built-in endpoint and no default model**.
+
+**One-time setup, then it just works** (CLI wizard or the hub's web panel; the config is saved to `~/.openjev/llm.json`, mode 0600):
+
+```bash
+python -m openjev.llm_config            # wizard: paste base URL, fetch /models, pick one, smoke test, save
+# or non-interactive:
+python -m openjev.llm_config --base-url https://api.deepseek.com/v1 --model deepseek-chat --api-key sk-...
+```
+
+The wizard fetches the endpoint's `/models` list so you pick from what actually exists, runs a one-word smoke test, and saves. Afterwards every command and the hub read that config — no env vars needed (though `OPENJEV_LLM_BASE_URL/MODEL/API_KEY` and CLI flags still override it). Inspect with `--status` (key masked).
+
+The whole conversation goes in **with context** and comes back as structured JSON (measured outputs from a large chat-capable model via this interface):
+
+```text
+#   low-interest chat  -> their 0.4/3, trend falling  -> 停: "她连续用敷衍、拒绝和'挺忙的'收尾, 没有一次反问或主动"
+#   high-interest chat -> their 2.9/3, trend rising   -> 冲: "她主动提议同行、敲定时间地点还回请吃饭"
+#   borderline chat    -> their 1.3/3, trend flat     -> 稳: "邀约时用'看情况+可能加班'打太极"
+#   warming chat       -> their 2.7/3, trend rising   -> 冲: "应趁热把时间地点钉死防止鸽掉" + next_advice
+```
+
+The verdict includes `next_advice` — a concrete suggestion for your next message, not just a number. Hardened against chatty providers: `response_format: json_object` with fallback, plus a per-key salvage parser that recovers verdicts from truncated/garbled completions.
+
+### WeChat radar: screenshot in, verdict out (floating widget)
+
+The paste UI works, but switching windows to paste is friction. `openjev/wechat_radar.py` is a small **always-on-top floating widget** with an auto-watch clipboard: you screenshot in WeChat, the verdict just pops up.
+
+```bash
+python -m openjev.wechat_radar      # floating widget appears, always on top, watching
+```
+
+**Auto mode (default, zero keystrokes):** screenshot the chat area (`Alt+A` / `Win+Shift+S`) or multi-select messages → 复制 — the widget notices the new clipboard content and runs the whole chain automatically (local OCR → transcript → LLM verdict → big colored 冲/稳/缓/停 on the widget). Non-chat content is ignored silently (a 2-line + CJK heuristic gates text; images below 200×80 are skipped), so normal copying never triggers a false analysis.
+
+Manual hotkeys still force-run anything: **Ctrl+F2** (clipboard text) / **Ctrl+F3** (clipboard screenshot). Click the result to copy the verdict; drag the title to move; double-click for compact mode; right-click to close. `--no-auto` disables the watcher (hotkeys only), `--poll-ms` tunes the check interval.
+
+The widget never touches WeChat itself — no hooks, no automation, no reading of WeChat memory. The watcher checks only a sequence number (zero cost) and reads clipboard content when it changes, exactly as if you pasted it yourself. Screenshots stay in RAM (nothing written to disk). OCR is local; only the recognized transcript goes to your configured LLM endpoint (same privacy note as above).
+
+Known OCR floor: single-character bubbles like `嗯` fall below the OCR detection threshold and may be missed — an acceptable loss, since a one-char reply rarely flips a verdict.
+
+### WeChat assistant: incoming message in, verdict + draft out
+
+The radar still needs you to screenshot. `openjev/wechat_assistant.py` goes further: it **watches a conversation for new incoming messages** and runs the whole loop by itself.
+
+```bash
+python -m openjev.wechat_assistant --who 她的备注名     # assistant mode, one chat
+python -m openjev.wechat_assistant --who 甲,乙          # several chats
+python -m openjev.wechat_assistant --no-draft            # verdict only, no draft
+```
+
+When the watched contact sends a message, the widget pops the 冲/稳/缓/停 verdict automatically, and the **suggested reply is pasted into that chat's input box as a draft** — you review it and press Enter (or clear it). Nothing is ever sent without your keystroke; that is the hard line.
+
+How it works, and what it does not do:
+
+- Built on [wxauto4](https://docs.wxauto.org/) (Windows UI Automation): OpenJev reads the on-screen chat window of your own logged-in client and writes into the input box, the same way you would with mouse and keyboard. **No DLL injection, no memory reading, no protocol reverse-engineering** — the techniques that got accounts banned in the 2025 crackdown. UI automation of your own session is the lowest-risk integration that exists for personal WeChat; it is still third-party, not official, so use a chat you own (start with 文件传输助手) and keep frequencies human.
+- New-message detection is dual-channel: the wxauto callback plus an independent poll-and-diff fallback, so a silent callback cannot blind the assistant.
+- Your own sent messages are never judged (only incoming/friend messages trigger analysis).
+- The clipboard is saved and restored around every draft paste — your copied stuff survives.
+- Same privacy shape as the radar: everything local except the transcript sent to your configured LLM.
+- Requires Windows + WeChat PC 4.x logged in; `pip install wxauto4` (free edition works on Python 3.13 via cp313 wheel ≥41.1.7). If attach fails once with "未找到已登录的客户端主窗口", it retries automatically.
+
+### QQ assistant: OneBot 11 real-time verdicts (easier than WeChat)
+
+QQ is structurally the easy case: NapCat speaks the OneBot 11 protocol, so messages arrive as structured JSON events - no OCR, no UI automation, and even your **own outgoing messages** come through, giving full two-sided context.
+
+```bash
+python -m openjev.qq_assistant --ws ws://127.0.0.1:3001   # NapCat forward WS
+python -m openjev.qq_assistant --watch 10086              # one QQ uin only (default: all private chats)
+python -m openjev.qq_assistant --selftest                 # full-chain selftest without NapCat
+```
+
+Prerequisite: NapCat (or LLOneBot) with forward WebSocket enabled (default port 3001). Message bursts are debounced - analysis fires only after `--quiet-secs` (default 6) of silence, over the last `--context` (default 30) lines. `--send-reply` posts the suggestion back into the chat; off by default (suggest, never auto-send - same hard boundary as the WeChat assistant).
+
+Honest note: NapCat is a third-party injection into the NTQQ client; theoretical ban risk exists (historically QQ has been far more tolerant than WeChat) - use a spare account if worried. The official q.qq.com bot platform cannot read friend chats, so it can't serve this use case. The module sends nothing to anyone unless you pass `--send-reply`.
+
+### Telegram assistant: the cleanest path of all (official API + history backfill)
+
+Telegram officially opens the MTProto user API - log in **as yourself** via a legal third-party client (same class as Telegram Desktop; no injection, no hooking). Messages flow in real time both ways, and startup can **backfill recent history** straight into context (something neither QQ nor WeChat can do):
+
+```bash
+python -m openjev.tg_assistant --login     # one-time login (api_id/api_hash from my.telegram.org)
+python -m openjev.tg_assistant             # live verdicts on all private chats
+python -m openjev.tg_assistant --watch 123456789 --backfill 50 --push http://127.0.0.1:8793/api/verdict
+python -m openjev.tg_assistant --selftest  # full-chain selftest without logging in
+```
+
+The event core reuses the QQ assistant (OneBot-shaped mapping); quiet-debounce / verdict / --push semantics are identical. Groups are ignored - private chats only.
+
+Other platforms, honestly: **Discord** - official bots can't read your DMs, self-bots violate ToS; **WhatsApp** - no personal API, only WhatsApp-Web automation (WeChat-UIA risk class) or protocol reimplementations (hook risk class); **LINE/KakaoTalk** - official APIs are service-accounts only, no path; **Signal** - official "linked device" exists but with heavy restrictions; **iMessage** - macOS AppleScript only. Verdict: Telegram > QQ > WeChat > WhatsApp > the rest.
+
+**In-chat overlay card (`qq_overlay`)**: the verdict is layered right at the end of the message area in a specified chat window - visually "analysis right after their messages":
+
+```bash
+# first pop the chat out into its own window (double-click her in the session list)
+python -m openjev.qq_overlay --who her-remark-name
+```
+
+The card is a translucent always-on-top overlay that follows the chat window; click it to copy the suggested reply; click **[+ details]** or double-click to expand the full report (big font + copy/collapse buttons). **No hooking, no injection - the QQ process never knows it exists** (visual inlining via overlay beats risking injection). Events still come from NapCat; `--selftest` runs the full chain without it. Rendering the analysis into the actual message-flow DOM is LiteLoaderQQNT-plugin territory (injection; not done here).
+
+**Bot hub** (paste UI + chat-platform bridge, one process):
+
+```bash
+python -m openjev.crush_bot --port 8792       # then open http://127.0.0.1:8792
+```
+
+- `POST /api/analyze` `{chat, you, them}` — used by the built-in paste UI
+- `POST /qq` / `POST /wechat` — same contract for a chat-platform relay you operate: the platform side (QQ official-bot webhook, WeChat bridge) posts the conversation, the hub replies with a formatted verdict text. On the WeChat side OpenJev deliberately ships **no auto-receiving** (hooking risks bans); on the QQ side real-time receiving is built in via OneBot 11 - see `qq_assistant` above.
+- Privacy note: full-context analysis means the conversation is sent to the LLM provider. Use a self-hosted endpoint (`--base-url http://your-vllm/v1`) for sensitive chats.
+
+**Use it from your phone**: the hub page is mobile-ready (viewport + responsive). On the same WiFi:
+
+```bash
+python -m openjev.crush_bot --host 0.0.0.0 --port 8792   # open http://<pc-ip>:8792 in the phone browser
+```
+
+Phones can paste and analyze, but **never see the endpoint or key** (the remote view returns only "configured + model name"); config writes and model listing are loopback-only - LAN requests get 403 unless you explicitly set `OPENJEV_ALLOW_REMOTE_CONFIG=1`.
+
+The phone page also has a **live verdict feed**: pass `--push` to the local QQ/WeChat processes and verdicts stream onto the page in real time (SSE):
+
+```bash
+python -m openjev.qq_overlay --who her-remark-name --push http://127.0.0.1:8793/api/verdict
+```
+
+Note: with the hub bound to 0.0.0.0 the feed is visible to the whole LAN (including chat-derived reason text) - use it only on a WiFi you trust.
 
 ### Browser UI (paste and judge)
 

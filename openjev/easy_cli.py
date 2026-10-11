@@ -127,22 +127,66 @@ def bar(p: float, width: int = 24) -> str:
 
 
 def show_answers(answers: Dict[str, Any]) -> None:
-    """Pretty-print answers with probability bars."""
+    """Pretty-print typed answers with readable labels and probabilities."""
     for qid, ans in answers.items():
         say("")
+
         if ans["type"] == "noul":
             p = ans["noul"]
-            say("  %-12s Yes %s %.4f" % (qid, bar(p), p))
-            say("  %-12s No  %s %.4f" % ("", bar(1.0 - p), 1.0 - p))
+
+            say("  %s" % qid)
+            say("    Yes          %6.2f%% %s" % (p * 100.0, bar(p)))
+            say("    No           %6.2f%% %s" % ((1.0 - p) * 100.0, bar(1.0 - p)))
+
         elif ans["type"] == "choice":
+            say("  %s" % qid)
+
             for name, p in ans["probabilities"].items():
                 mark = "*" if name == ans["choice"] else " "
-                say("  %-12s %s %s %.4f" % (qid, mark, bar(p), p))
-            say("  -> choice=%s (confidence %.4f)" % (ans["choice"], ans["confidence"]))
+                say(
+                    "  %s %-12s %6.2f%% %s"
+                    % (mark, name, p * 100.0, bar(p))
+                )
+
+            say("")
+            say(
+                "    -> choice = %s"
+                % ans["choice"]
+            )
+            say(
+                "       confidence = %.2f%%"
+                % (ans["confidence"] * 100.0)
+            )
+
         elif ans["type"] == "score":
+            say("  %s" % qid)
+
+            legend = ans.get("legend", [])
+
             for lvl, p in ans["probabilities"].items():
-                say("  %-12s level %s %s %.4f" % (qid, lvl, bar(p), p))
-            say("  -> score=%.4f (confidence %.4f)" % (ans["score"], ans["confidence"]))
+                index = int(lvl)
+
+                if index < len(legend):
+                    label = legend[index]
+                else:
+                    label = "level %s" % lvl
+
+                say(
+                    "    %-12s %6.2f%% %s"
+                    % (label, p * 100.0, bar(p))
+                )
+
+            say("")
+            say(
+                "    -> score = %.4f"
+                % ans["score"]
+            )
+            say(
+                "       confidence = %.2f%%"
+                % (ans["confidence"] * 100.0)
+            )
+
+
 
 
 def save_config(cfg: Dict[str, Any]) -> None:
@@ -288,7 +332,7 @@ def build_engine(cfg: Dict[str, Any]):
 def smoke_test(engine, label: str) -> bool:
     """One real question; returns True when the backend works end to end."""
     say("")
-    say("[test] asking %s: 'The server is down and we are losing money.' -> urgent?" % label)
+#    say("[test] asking %s: 'The server is down and we are losing money.' -> urgent?" % label)
     try:
         ans = engine.answer_one(
             Noul(instructions="Does this message express urgency?"),

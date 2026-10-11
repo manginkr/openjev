@@ -1,6 +1,0 @@
-torch>=2.0
-transformers>=4.40
-huggingface_hub
-
-[dev]
-pytest>=7.0

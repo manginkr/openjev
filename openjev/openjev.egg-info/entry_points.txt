@@ -1,4 +1,0 @@
-[console_scripts]
-openjev = openjev.cli:main
-openjev-easy = openjev.easy_cli:main
-openjev-web = openjev.webapp:main

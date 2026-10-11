@@ -72,18 +72,38 @@ def _probs_from_top(top: List[Tuple[str, float]], labels: List[str]) -> Optional
     """
     Extract label probabilities from top-logprobs entries.
 
-    Returns None when any label is missing from the top-k window: in that
-    case the honest fallback is generation mode, not made-up numbers.
+    Ollama/Qwen may represent a word token with a leading space or
+    tokenizer marker, e.g. " Yes", "_No", or "▁Yes".
+    Normalize those forms before matching the OpenJev labels.
     """
-    table = dict(top)
-    vals: List[float] = []
-    for label in labels:
-        if label not in table:
-            return None
-        vals.append(exp(table[label]))
-    total = sum(vals)
-    return [v / total for v in vals]
 
+    def normalize(token: str) -> str:
+        token = token.strip()
+
+        # Common tokenizer word-boundary markers.
+        while token.startswith(("_", "▁", "Ġ")):
+            token = token[1:]
+
+        return token.strip().lower()
+
+    table = {}
+
+    for token, logprob in top:
+        table.setdefault(normalize(token), logprob)
+
+    vals: List[float] = []
+
+    for label in labels:
+        key = normalize(label)
+
+        if key not in table:
+            return None
+
+        vals.append(exp(table[key]))
+
+    total = sum(vals)
+
+    return [v / total for v in vals]
 
 class OpenAICompatJev:
     """
@@ -118,33 +138,94 @@ class OpenAICompatJev:
     # ------------------------------------------------------------------
 
     def _chat(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """One POST to /chat/completions with retry on 429/5xx."""
+        """One POST to the configured OpenAI-compatible chat endpoint."""
         url = self.base_url + "/chat/completions"
         body = json.dumps(payload).encode("utf-8")
         headers = {"Content-Type": "application/json"}
         if self.api_key:
             headers["Authorization"] = "Bearer %s" % self.api_key
-        last_error: Optional[Exception] = None
-        for attempt in range(3):
-            req = urllib.request.Request(url, data=body, headers=headers, method="POST")
-            try:
-                with urllib.request.urlopen(req, timeout=OPENAI_TIMEOUT) as resp:
-                    return json.loads(resp.read().decode("utf-8"))
-            except urllib.error.HTTPError as exc:
-                if exc.code in (429, 500, 502, 503, 504) and attempt < 2:
-                    retry_after = exc.headers.get("retry-after")
-                    delay = float(retry_after) if retry_after else 2.0 * (attempt + 1)
-                    time.sleep(delay)
-                    last_error = exc
-                    continue
-                raise
-            except urllib.error.URLError as exc:
-                if attempt < 2:
-                    time.sleep(2.0 * (attempt + 1))
-                    last_error = exc
-                    continue
-                raise
-        raise last_error  # pragma: no cover
+
+        req = urllib.request.Request(
+            url, data=body, headers=headers, method="POST"
+        )
+
+        with urllib.request.urlopen(req, timeout=OPENAI_TIMEOUT) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+
+    def _ollama_generate(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+        """Use Ollama's native /api/generate endpoint.
+
+        Ollama's native API exposes logprobs, while the OpenAI-compatible
+        endpoint used by this OpenJev version does not reliably expose them.
+        """
+        url = "http://localhost:11434/api/generate"
+
+        messages = payload.get("messages", [])
+        prompt_parts = []
+
+        for message in messages:
+            role = message.get("role", "")
+            content = message.get("content", "")
+            prompt_parts.append("%s: %s" % (role, content))
+
+        prompt = "\n".join(prompt_parts)
+
+        native_payload = {
+           "model": payload["model"],
+           "prompt": prompt,
+           "stream": False,
+           "think": False,
+           "options": {
+               "temperature": payload.get("temperature", 0.0),
+               "num_predict": payload.get("max_tokens", 1),
+           },
+           "logprobs": True,
+           "top_logprobs": payload.get("top_logprobs", 20),
+        }
+
+
+        body = json.dumps(native_payload).encode("utf-8")
+        headers = {"Content-Type": "application/json"}
+
+        req = urllib.request.Request(
+            url, data=body, headers=headers, method="POST"
+        )
+
+        with urllib.request.urlopen(req, timeout=OPENAI_TIMEOUT) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+
+        native_logprobs = data.get("logprobs") or []
+
+        if not native_logprobs:
+            raise RuntimeError(
+                "Ollama native API returned no logprobs"
+            )
+
+        # Convert Ollama's native structure into the structure expected
+        # by the existing OpenJev probability code.
+        first = native_logprobs[0]
+
+        return {
+            "choices": [{
+                "message": {
+                    "role": "assistant",
+                    "content": data.get("response", ""),
+                },
+                "logprobs": {
+                    "content": [{
+                        "token": first.get("token", ""),
+                        "logprob": first.get("logprob"),
+                        "bytes": first.get("bytes"),
+                        "top_logprobs": first.get("top_logprobs", []),
+                    }]
+                },
+            }],
+            "usage": {
+                "prompt_tokens": data.get("prompt_eval_count", 0),
+                "completion_tokens": data.get("eval_count", 0),
+            },
+        }
+
 
     # ------------------------------------------------------------------
     # decision engine surface
@@ -182,7 +263,12 @@ class OpenAICompatJev:
             "top_logprobs": 20,
         }
         t0 = time.perf_counter()
-        data = self._chat(payload)
+
+        if self.base_url == "http://localhost:11434/v1":
+            data = self._ollama_generate(payload)
+        else:
+            data = self._chat(payload)
+
         elapsed_ms = (time.perf_counter() - t0) * 1000.0
 
         choice0 = data["choices"][0]
@@ -194,28 +280,54 @@ class OpenAICompatJev:
             )
         top = [(t, lp) for t, lp in _top_logprobs(content[0]["top_logprobs"])]
 
-        # try exact label match first
-        probs = _probs_from_top(top, labels)
-        if probs is None and question.type_name == "noul":
-            # fuzzy case-insensitive match for Yes/No variants ("yes", "YES")
-            lowered = {}
-            for tok, lp in top:
-                lowered.setdefault(tok.strip().lower(), lp)
-            vals = []
-            for label in labels:
-                if label.lower() not in lowered:
-                    raise RuntimeError(
-                        "answer token %r not in top-logprobs window; "
-                        "probabilities would be dishonest" % label
-                    )
-                vals.append(exp(lowered[label.lower()]))
-            total = sum(vals)
-            probs = [v / total for v in vals]
+
+####
+
+        # Try matching the answer labels against Ollama's token strings.
+        # Ollama/Qwen may represent the same token as:
+        #   "Yes"
+        #   " Yes"
+        #   "_Yes"
+        #   "▁Yes"
+        #   "ĠYes"
+        def normalize_token(token: str) -> str:
+            token = token.strip().lower()
+
+            # Remove tokenizer word-boundary markers.
+            while token.startswith(("_", "Ġ", "▁")):
+                token = token[1:]
+
+            return token.strip()
+
+        normalized = {}
+        for tok, lp in top:
+            normalized.setdefault(normalize_token(tok), lp)
+
+        vals = []
+        for label in labels:
+            key = normalize_token(label)
+
+            if key not in normalized:
+                raise RuntimeError(
+                    "answer token %r not in top-logprobs window; "
+                    "probabilities would be dishonest. "
+                    "Available tokens: %r"
+                    % (label, [repr(t) for t, _ in top])
+                )
+
+            vals.append(exp(normalized[key]))
+
+        total = sum(vals)
+        probs = [v / total for v in vals]
+
         if probs is None:
             raise RuntimeError(
                 "answer tokens not fully covered by top-logprobs window; "
                 "try a bigger top_logprobs or another backend"
             )
+
+
+####
 
         self.usage["forward_passes"] += 1
         self.usage["input_tokens"] += int(data.get("usage", {}).get("prompt_tokens", 0))
